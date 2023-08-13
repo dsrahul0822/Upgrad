@@ -95,6 +95,16 @@ alter table tbl_employees
 add constraint fk_emp_job foreign key (job_id) 
 references tbl_jobs(job_id);
 
+
+alter table tbl_job_history add constraint fk_jh_jobs foreign key (employee_id) 
+references tbl_employees (employee_id);
+
+alter table tbl_departments add constraint fk_dept_loc foreign key (location_id) references tbl_locations(location_id);
+
+alter table tbl_locations add constraint fk_loc_country foreign key (country_id) references tbl_countries(country_id);
+
+alter table tbl_countries add constraint fk_count_reg foreign key(region_id) references tbl_regions(region_id);
+
 /*In the PK and FK the datatypes should be same
 We cannot create the FK without creating the PK*/
 
