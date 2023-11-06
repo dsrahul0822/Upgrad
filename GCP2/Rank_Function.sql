@@ -98,7 +98,7 @@ from tbl_employees;
 
 
 
-
+create view rank_emp_exe as 
 select name,salary,commission,yearly_salary, department_name,
 rank() over(partition by department_name order by yearly_salary desc) rnk from (
 select concat(emp.first_name,' ',emp.last_name) name, 
@@ -108,8 +108,78 @@ ifnull(emp.commission_pct,0) commission,
 dept.department_name
 from tbl_employees emp
 inner join tbl_departments dept
-on emp.department_id = dept.department_id) tbl;
+on emp.department_id = dept.department_id) tbl
+where department_name ='Executive';
 
+
+select * from rank_emp_exe;
+
+/*CTE - To improve the query performance*/
+
+-- Create the Employees table
+CREATE TABLE Employees (
+  EmployeeID INT PRIMARY KEY,
+  EmployeeName VARCHAR(50),
+  DepartmentID INT
+);
+
+-- Create the EmployeeSalaries table
+CREATE TABLE EmployeeSalaries (
+  EmployeeID INT PRIMARY KEY,
+  Salary DECIMAL(10, 2)
+);
+
+-- Insert sample data into Employees
+INSERT INTO Employees (EmployeeID, EmployeeName, DepartmentID)
+VALUES
+  (1, 'John Doe', 1),
+  (2, 'Jane Smith', 2),
+  (3, 'Bob Johnson', 1),
+  (4, 'Alice Brown', 2),
+  (5, 'Eva Davis', 1);
+
+-- Insert sample data into EmployeeSalaries
+INSERT INTO EmployeeSalaries (EmployeeID, Salary)
+VALUES
+  (1, 60000.00),
+  (2, 65000.00),
+  (3, 58000.00),
+  (4, 70000.00),
+  (5, 62000.00);
+
+
+
+
+
+
+
+
+
+
+select * from employees;
+
+
+select * from employeesalaries;
+
+with deptavgsalary as (
+select 
+e.departmentid, 
+avg(es.salary) as avgsal
+from employees e
+inner join employeesalaries es 
+on e.employeeid=es.employeeid
+group by e.departmentid
+having avg(es.salary)>60000
+)
+
+select 
+d.departmentid,
+da.avgsal,
+count(*) as empcount
+from deptavgsalary da
+inner join employees d on da.departmentid = d.departmentid
+group by d.departmentid, da.avgsal
+order by da.avgsal desc;
 
 
 
